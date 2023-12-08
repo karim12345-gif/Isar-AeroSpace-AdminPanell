@@ -174,9 +174,6 @@ const LoginPage = () => {
               }}
             >
               <IsarAeroSpaceLogo size={60} />
-              <Typography variant='h6' sx={{ ml: 2, lineHeight: 1, fontWeight: 700, fontSize: '1.5rem !important' }}>
-                {themeConfig.templateName}
-              </Typography>
             </Box>
             <Box sx={{ mb: 6 }}>
               <TypographyStyled variant='h5'>{`Welcome to ${themeConfig.templateName}! 🚀`}</TypographyStyled>
