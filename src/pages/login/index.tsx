@@ -1,9 +1,6 @@
 // ** React Imports
 import { useState, ReactNode } from 'react'
 
-// ** Next Imports
-import Link from 'next/link'
-
 // ** MUI Components
 import Alert from '@mui/material/Alert'
 import Button from '@mui/material/Button'
@@ -20,7 +17,6 @@ import FormHelperText from '@mui/material/FormHelperText'
 import InputAdornment from '@mui/material/InputAdornment'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
-import { MaalyLogo } from 'src/components'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -43,6 +39,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
+import { IsarAeroSpaceLogo } from 'src/components'
 
 // ** Styled Components
 const LoginIllustrationWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -100,8 +97,8 @@ const schema = yup.object().shape({
 })
 
 const defaultValues = {
-  password: 'admin',
-  email: 'admin@materialize.com'
+  password: 'Test@12345',
+  email: 'admin@Isar-AeroSpace.com'
 }
 
 interface FormData {
@@ -181,21 +178,18 @@ const LoginPage = () => {
                 justifyContent: 'center'
               }}
             >
-              <MaalyLogo size={60} />
+              <IsarAeroSpaceLogo size={60} />
               <Typography variant='h6' sx={{ ml: 2, lineHeight: 1, fontWeight: 700, fontSize: '1.5rem !important' }}>
                 {themeConfig.templateName}
               </Typography>
             </Box>
             <Box sx={{ mb: 6 }}>
-              <TypographyStyled variant='h5'>{`Welcome to ${themeConfig.templateName}! 👋🏻`}</TypographyStyled>
+              <TypographyStyled variant='h5'>{`Welcome to ${themeConfig.templateName}! 🚀`}</TypographyStyled>
               <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
             </Box>
             <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
               <Typography variant='caption' sx={{ mb: 2, display: 'block', color: 'primary.main' }}>
-                Admin: <strong>admin@materialize.com</strong> / Pass: <strong>admin</strong>
-              </Typography>
-              <Typography variant='caption' sx={{ display: 'block', color: 'primary.main' }}>
-                Client: <strong>client@materialize.com</strong> / Pass: <strong>client</strong>
+                Admin: <strong>admin@Isar-AeroSpace.com</strong> / Pass: <strong>Test@12345</strong>
               </Typography>
             </Alert>
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
@@ -212,7 +206,7 @@ const LoginPage = () => {
                       onBlur={onBlur}
                       onChange={onChange}
                       error={Boolean(errors.email)}
-                      placeholder='admin@materialize.com'
+                      placeholder='admin@Isar-AeroSpace.com'
                     />
                   )}
                 />
@@ -262,24 +256,10 @@ const LoginPage = () => {
                   label='Remember Me'
                   control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
                 />
-                <Typography
-                  variant='body2'
-                  component={Link}
-                  href='/forgot-password'
-                  sx={{ color: 'primary.main', textDecoration: 'none' }}
-                >
-                  Forgot Password?
-                </Typography>
               </Box>
               <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
                 Login
               </Button>
-              <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Typography sx={{ mr: 2, color: 'text.secondary' }}>New on our platform?</Typography>
-                <Typography href='/register' component={Link} sx={{ color: 'primary.main', textDecoration: 'none' }}>
-                  Create an account
-                </Typography>
-              </Box>
             </form>
           </BoxWrapper>
         </Box>

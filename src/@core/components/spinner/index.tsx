@@ -1,6 +1,6 @@
 // ** MUI Imports
 import Box, { BoxProps } from '@mui/material/Box'
-import { MaalyLogo } from 'src/components'
+import { IsarAeroSpaceLogo } from 'src/components'
 import { CircularProgress } from '@mui/material'
 
 interface FallbackSpinnerProps {
@@ -19,7 +19,7 @@ const FallbackSpinner = ({ sx }: FallbackSpinnerProps) => {
         ...sx
       }}
     >
-      <MaalyLogo size={100} />
+      <IsarAeroSpaceLogo size={100} />
       <CircularProgress disableShrink sx={{ mt: 6 }} />
     </Box>
   )

@@ -15,7 +15,7 @@ import Icon from 'src/@core/components/icon'
 
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
-import { MaalyLogo } from 'src/components'
+import { IsarAeroSpaceLogo } from 'src/components'
 
 interface Props {
   navHover: boolean
@@ -129,7 +129,7 @@ const VerticalNavHeader = (props: Props) => {
         userNavMenuBranding(props)
       ) : (
         <LinkStyled href='/'>
-          <MaalyLogo size={navCollapsed ? 40 : 60} />
+          <IsarAeroSpaceLogo size={navCollapsed ? 40 : 60} />
           <HeaderTitle variant='h6' sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 2 }) }}>
             {themeConfig.templateName}
           </HeaderTitle>

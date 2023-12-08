@@ -9,7 +9,7 @@ interface GradientColor {
   end?: string // Make 'end' property optional
 }
 
-interface MaalyLogoProps {
+interface IIsarAeroSpaceProps {
   color?: string
   isNewLogo?: boolean
   size?: number | string
@@ -32,7 +32,7 @@ const createGradient = (color: GradientColor) => {
   }
 }
 
-const MaalyLogo = ({ gradientColor, size, color, width, height, isNewLogo }: MaalyLogoProps) => {
+const AeroSpaceLogo = ({ gradientColor, size, color, width, height, isNewLogo }: IIsarAeroSpaceProps) => {
   const { settings } = useSettings()
   const defaultSize = 200 // Adjust the default size here
   const gradient = gradientColor?.end ? gradientColor : undefined
@@ -66,4 +66,4 @@ const MaalyLogo = ({ gradientColor, size, color, width, height, isNewLogo }: Maa
   )
 }
 
-export default MaalyLogo
+export default AeroSpaceLogo

@@ -1,3 +1,3 @@
-import MaalyLogo from './MaalyLogo'
+import IsarAeroSpaceLogo from './IsarAeroSpaceLogo'
 
-export { MaalyLogo }
+export { IsarAeroSpaceLogo }

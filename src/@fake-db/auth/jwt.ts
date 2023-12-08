@@ -10,22 +10,15 @@ import defaultAuthConfig from 'src/configs/auth'
 // ** Types
 import { UserDataType } from 'src/context/types'
 
+//!! user Date type
 const users: UserDataType[] = [
   {
     id: 1,
     role: 'admin',
-    password: 'admin',
-    fullName: 'John Doe',
-    username: 'johndoe',
-    email: 'admin@materialize.com'
-  },
-  {
-    id: 2,
-    role: 'client',
-    password: 'client',
-    fullName: 'Jane Doe',
-    username: 'janedoe',
-    email: 'client@materialize.com'
+    password: 'Test@12345',
+    fullName: 'Karim Salim',
+    username: 'kareem-admin',
+    email: 'admin@Isar-AeroSpace.com'
   }
 ]
 
