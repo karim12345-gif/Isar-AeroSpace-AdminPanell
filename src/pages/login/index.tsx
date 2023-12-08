@@ -131,7 +131,9 @@ const LoginPage = () => {
     resolver: yupResolver(schema)
   })
 
+  //?? on submit function that will check the cardinalates
   const onSubmit = (data: FormData) => {
+    //** destructing the data  */
     const { email, password } = data
     auth.login({ email, password, rememberMe }, () => {
       setError('email', {
@@ -177,15 +179,31 @@ const LoginPage = () => {
             </Box>
             <Box sx={{ mb: 6 }}>
               <TypographyStyled variant='h5'>{`Welcome to ${themeConfig.templateName}! 🚀`}</TypographyStyled>
-              <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
+              <Typography variant='body2'>
+                Please sign-in to your to check the latest Data to start your rocket!
+              </Typography>
             </Box>
-            <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
+            <Alert icon={false} sx={{ py: 3, mb: 6, '& .MuiAlert-message': { p: 0 } }}>
               <Typography variant='caption' sx={{ mb: 2, display: 'block', color: 'primary.main' }}>
-                Admin: <strong>admin@Isar-AeroSpace.com</strong> / Pass: <strong>Test@12345</strong>
+                {themeConfig.mode === 'light' ? (
+                  <>
+                    <p style={{ color: 'red' }}>
+                      Admin: <strong style={{ color: 'darkgray' }}>admin@Isar-AeroSpace.com</strong> / Pass:{' '}
+                      <strong style={{ color: 'darkgray' }}>Test@12345</strong>
+                    </p>
+                  </>
+                ) : themeConfig.mode === 'semi-dark' ? (
+                  <>
+                    <p style={{ color: 'darkgray' }}>
+                      Admin: <strong style={{ color: 'darkgray' }}>admin@Isar-AeroSpace.com</strong> / Pass:{' '}
+                      <strong style={{ color: 'darkgray' }}>Test@12345</strong>
+                    </p>
+                  </>
+                ) : null}
               </Typography>
             </Alert>
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-              <FormControl fullWidth sx={{ mb: 4 }}>
+              <FormControl fullWidth sx={{ mb: 5 }}>
                 <Controller
                   name='email'
                   control={control}

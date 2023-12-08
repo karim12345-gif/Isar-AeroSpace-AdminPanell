@@ -5,7 +5,6 @@ import Link from 'next/link'
 import IconButton from '@mui/material/IconButton'
 import Box, { BoxProps } from '@mui/material/Box'
 import { styled, useTheme } from '@mui/material/styles'
-import Typography, { TypographyProps } from '@mui/material/Typography'
 
 // ** Type Import
 import { LayoutProps } from 'src/@core/layouts/types'
@@ -14,7 +13,6 @@ import { LayoutProps } from 'src/@core/layouts/types'
 import Icon from 'src/@core/components/icon'
 
 // ** Configs
-import themeConfig from 'src/configs/themeConfig'
 import { IsarAeroSpaceLogo } from 'src/components'
 
 interface Props {
@@ -40,12 +38,6 @@ const MenuHeaderWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   minHeight: theme.mixins.toolbar.minHeight
 }))
 
-const HeaderTitle = styled(Typography)<TypographyProps>({
-  fontWeight: 700,
-  lineHeight: 1.2,
-  transition: 'opacity .25s ease-in-out, margin .25s ease-in-out'
-})
-
 const LinkStyled = styled(Link)({
   display: 'flex',
   alignItems: 'center',
@@ -70,7 +62,6 @@ const VerticalNavHeader = (props: Props) => {
   // ** Hooks & Vars
   const theme = useTheme()
   const { mode, direction, navCollapsed } = settings
-  const menuCollapsedStyles = navCollapsed && !navHover ? { opacity: 0 } : { opacity: 1 }
 
   const svgFillSecondary = () => {
     if (mode === 'semi-dark') {
@@ -129,10 +120,7 @@ const VerticalNavHeader = (props: Props) => {
         userNavMenuBranding(props)
       ) : (
         <LinkStyled href='/'>
-          <IsarAeroSpaceLogo size={navCollapsed ? 40 : 60} />
-          <HeaderTitle variant='h6' sx={{ ...menuCollapsedStyles, ...(navCollapsed && !navHover ? {} : { ml: 2 }) }}>
-            {themeConfig.templateName}
-          </HeaderTitle>
+          <IsarAeroSpaceLogo size={navCollapsed ? 30 : 50} />
         </LinkStyled>
       )}
 
