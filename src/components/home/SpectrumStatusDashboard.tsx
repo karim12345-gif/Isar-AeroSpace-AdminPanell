@@ -24,7 +24,6 @@ import { ApexOptions } from 'apexcharts'
 
 export interface CardData {
   icon: string
-  title: string
   tooltip: string
   color: ThemeColor
   velocity: number
@@ -35,12 +34,7 @@ export interface CardData {
   isActionRequired: boolean
 }
 
-// const donutColors = {
-//   series1: '#1a1aff', // Dark Blue
-//   series2: '#0080ff', // Medium Blue
-//   series3: '#00BFFF' // Light Blue
-// }
-const SpectrumStatistics = () => {
+const SpectrumStatusDashboard = () => {
   // ** States
   const [spectrumOverviewNumbers, setSpectrumOverviewNumbers] = useState<GetSpectrumStatus>()
 
@@ -60,6 +54,7 @@ const SpectrumStatistics = () => {
 
   useEffect(() => {
     getSpectrumStatus()
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -67,7 +62,6 @@ const SpectrumStatistics = () => {
   const cardData: CardData[] = spectrumOverviewNumbers
     ? [
         {
-          title: 'Temperature',
           icon: 'ep:data-line',
           color: 'primary',
           tooltip: spectrumOverviewNumbers.statusMessage,
@@ -145,8 +139,14 @@ const SpectrumStatistics = () => {
     yaxis: {
       labels: {
         style: { colors: theme.palette.text.disabled },
-        formatter: (value: number) => {
-          return `${value.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')} OMR`
+        formatter: (value: number, index: number) => {
+          const formattedValue = value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
+          // Use different labels for each axis
+          const axisLabels = ['%', '', '']
+          const label = axisLabels[index] || ''
+
+          return `${formattedValue} ${label}`
         }
       },
       title: {
@@ -189,7 +189,7 @@ const SpectrumStatistics = () => {
                   <Box sx={{ mb: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     {/* Temperature */}
                     <Box display={'flex'} gap={2}>
-                      <Typography sx={{ color: 'text.secondary' }}>{item.title}</Typography>
+                      <Typography sx={{ color: 'text.secondary' }}>Temperature:</Typography>
                       {item.temperature ? (
                         <CustomChip
                           rounded
@@ -225,14 +225,14 @@ const SpectrumStatistics = () => {
 
                   {/* Temperature */}
                   <Box sx={{ mt: 5 }} display={'flex'} gap={2}>
-                    <Typography sx={{ color: 'text.secondary' }}>{item.title}</Typography>
-                    {item.temperature ? (
+                    <Typography sx={{ color: 'text.secondary' }}>Altitude</Typography>
+                    {item.altitude ? (
                       <CustomChip
                         rounded
                         size='small'
                         skin='light'
-                        color={item.temperature < 0 ? 'error' : 'success'}
-                        label={item.temperature < 0 ? `${item.temperature}%` : `+ ${item.temperature}%`}
+                        color={item.altitude < 0 ? 'error' : 'success'}
+                        label={item.altitude < 0 ? `${item.altitude}%` : `+ ${item.altitude}%`}
                       />
                     ) : null}
                   </Box>
@@ -256,7 +256,7 @@ const SpectrumStatistics = () => {
                     {/* Action required status*/}
                     <Typography variant='body2' sx={{ color: 'text.secondary' }}>
                       {/* if the action is not true, then no action required  */}
-                      Action Required: Status :{' '}
+                      Action Required Status :{' '}
                       {!item.isActionRequired ? (
                         <CustomChip rounded size='small' skin='light' color='success' label='No Action Required' />
                       ) : (
@@ -310,4 +310,4 @@ const SpectrumStatistics = () => {
   )
 }
 
-export default SpectrumStatistics
+export default SpectrumStatusDashboard

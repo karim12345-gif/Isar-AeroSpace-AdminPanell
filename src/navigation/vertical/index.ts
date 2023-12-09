@@ -4,9 +4,14 @@ import { VerticalNavItemsType } from 'src/@core/layouts/types'
 const navigation = (): VerticalNavItemsType => {
   return [
     {
-      title: 'Home',
+      title: 'Spectrum Dashboard',
       path: '/home',
-      icon: 'mdi:home-outline'
+      icon: 'carbon:dashboard'
+    },
+    {
+      title: 'Spectrum Live Stream',
+      path: '/SpectrumLiveStream',
+      icon: 'fluent:location-live-20-regular'
     }
   ]
 }
