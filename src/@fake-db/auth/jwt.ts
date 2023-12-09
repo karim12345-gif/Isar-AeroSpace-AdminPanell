@@ -58,6 +58,8 @@ mock.onPost('/jwt/login').reply(request => {
   }
 })
 
+console.log(mock)
+
 mock.onPost('/jwt/register').reply(request => {
   if (request.data.length > 0) {
     const { email, password, username } = JSON.parse(request.data)

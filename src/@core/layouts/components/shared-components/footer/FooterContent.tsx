@@ -11,17 +11,18 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.main
 }))
 
+//** This is a footer function to show the current year with title and link  */
 const FooterContent = () => {
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
       <Typography sx={{ mr: 8 }}>
-        {`© ${new Date().getFullYear()}, Made with `}
+        {`© ${new Date().getFullYear()}, Isar AeroSpace `}
         <Box component='span' sx={{ color: 'error.main' }}>
-          ❤️
+          🚀📡👩‍🚀
         </Box>
         {` by `}
-        <LinkStyled target='_blank' href='https://telypay.com/'>
-          DCC
+        <LinkStyled target='_blank' href='https://www.isaraerospace.com/'>
+          AeroSpace
         </LinkStyled>
       </Typography>
     </Box>

@@ -1,3 +1,4 @@
 import IsarAeroSpaceLogo from './IsarAeroSpaceLogo'
+import SpectrumStatistics from './home/SpectrumStatistics'
 
-export { IsarAeroSpaceLogo }
+export { IsarAeroSpaceLogo, SpectrumStatistics }

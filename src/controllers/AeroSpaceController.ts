@@ -1,11 +1,11 @@
-import routes from 'src/routes'
-import axios, { AxiosResponse } from 'axios'
-import { toast } from 'react-hot-toast'
 import { NextRouter } from 'next/router'
-import { ResponseModel } from 'src/models'
-import { isResponseModel } from 'src/helpers'
-import { GetSpectrumStatus } from 'src/types'
+import toast from 'react-hot-toast'
 import { AeroSpaceApi } from 'src/api'
+import { isResponseModel } from 'src/helpers'
+
+import routes from 'src/routes'
+
+import { GetSpectrumStatus } from 'src/types'
 
 export default class RunwayController {
   private readonly router: NextRouter
@@ -15,18 +15,17 @@ export default class RunwayController {
   }
 
   //** This method will be responsible for handling the response and data */
-  GetSpectrumStatus = async (): Promise<GetSpectrumStatus[] | undefined> => {
+  GetSpectrumStatus = async (): Promise<GetSpectrumStatus | undefined> => {
     try {
       // ** Make a post request to login endpoint
-      const { data }: AxiosResponse<ResponseModel<GetSpectrumStatus[]>> = await axios.get(
-        AeroSpaceApi.getSpectrumStatus
-      )
+      const response = await fetch(AeroSpaceApi.getSpectrumStatus)
 
-      // ** Destructure the response
-      const { body, result } = data
+      // ** Assuming your API returns JSON data
+      const body: GetSpectrumStatus = await response.json()
 
       // ** If the result is 200, then login is successful
-      if (result === 200) {
+      if (response.status === 200) {
+        // Successful login
         return body
       }
     } catch (error: any) {
