@@ -11,6 +11,7 @@ import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import toast from 'react-hot-toast'
 
 export interface WebSocketLiveData {
   icon: string
@@ -27,9 +28,30 @@ export interface WebSocketLiveData {
 const SpectrumLiveStream = () => {
   // ** States
   const [socket, setSocket] = useState<WebSocketLiveData | undefined>();
+  const [toastDisplayed, setToastDisplayed] = useState(false);
 
   // ** Hooks
   const theme = useTheme()
+
+
+
+  
+  const handleActivation = (data: WebSocketLiveData) => {
+    // If isActivated is true and action is required, show a toast
+    if (data?.IsActionRequired === true && !toastDisplayed) {
+      toast.error('Action is required As soon as possible!', {
+        position: 'top-right',
+        duration: 5000, // 5 seconds
+      });
+      setToastDisplayed(true);
+    } else if (data?.IsActionRequired === false && toastDisplayed) {
+      toast.success('Action is not required for the moment!', {
+        position: 'top-right',
+        duration: 5000, // 5 seconds
+      });
+      setToastDisplayed(false);
+    }
+  };
 
 
   const getSpectrumLiveData = () => {
@@ -41,8 +63,7 @@ const SpectrumLiveStream = () => {
       newSocket.addEventListener('message', (event) => {
         const data = JSON.parse(event.data);
 
-        console.log(data)
-
+        
         //** this will udapte the data for our state  */
         setSocket({
           icon: 'ep:data-line',
@@ -55,11 +76,16 @@ const SpectrumLiveStream = () => {
           IsActionRequired: data.IsActionRequired
         });
 
+        
+           // receiving WebSocket data
+           handleActivation(data);
 
         // if action is reuqired === true clsoe the socket connection 
         if (data.IsActionRequired === true) {
           newSocket.close();
         }
+
+
       });
 
       return () => {
@@ -71,6 +97,7 @@ const SpectrumLiveStream = () => {
       console.error('Error creating WebSocket:', error);
     }
   };
+
   useEffect(() => {
     getSpectrumLiveData()
   }, []) // empty dependency array to run effect only once on mount
