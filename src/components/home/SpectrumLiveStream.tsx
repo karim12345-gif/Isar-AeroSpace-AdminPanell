@@ -28,28 +28,28 @@ export interface WebSocketLiveData {
 const SpectrumLiveStream = () => {
   // ** States
   const [socket, setSocket] = useState<WebSocketLiveData | undefined>();
-  const [toastDisplayed, setToastDisplayed] = useState(false);
 
   // ** Hooks
   const theme = useTheme()
 
 
-
   
   const handleActivation = (data: WebSocketLiveData) => {
+   
     // If isActivated is true and action is required, show a toast
-    if (data?.IsActionRequired === true && !toastDisplayed) {
-      toast.error('Action is required As soon as possible!', {
+    if (data?.IsActionRequired === true) {
+      toast.success('Action is required!', {
         position: 'top-right',
         duration: 5000, // 5 seconds
+        
+       
       });
-      setToastDisplayed(true);
-    } else if (data?.IsActionRequired === false && toastDisplayed) {
-      toast.success('Action is not required for the moment!', {
+    } else if (data?.IsActionRequired === false){
+      toast.error('Action is not required!', {
         position: 'top-right',
-        duration: 5000, // 5 seconds
+        duration: 3000, // 5 seconds
+       
       });
-      setToastDisplayed(false);
     }
   };
 
@@ -76,16 +76,14 @@ const SpectrumLiveStream = () => {
           IsActionRequired: data.IsActionRequired
         });
 
-        
-           // receiving WebSocket data
-           handleActivation(data);
 
         // if action is reuqired === true clsoe the socket connection 
         if (data.IsActionRequired === true) {
           newSocket.close();
         }
 
-
+           // receiving WebSocket data
+           handleActivation(data);
       });
 
       return () => {
@@ -97,6 +95,10 @@ const SpectrumLiveStream = () => {
       console.error('Error creating WebSocket:', error);
     }
   };
+
+
+
+
 
   useEffect(() => {
     getSpectrumLiveData()

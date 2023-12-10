@@ -174,7 +174,7 @@ Example:
 
 ``````
 
-## 5) CORS Headers:
+## 4) CORS Headers:
 
 ### Overview
 Cross-Origin Resource Sharing (CORS) headers are essential to enable secure cross-origin requests for both the HTTP and WebSocket endpoints.
