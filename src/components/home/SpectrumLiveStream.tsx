@@ -36,10 +36,13 @@ const SpectrumLiveStream = () => {
     try {
       const newSocket = new WebSocket('wss://webfrontendassignment-isaraerospace.azurewebsites.net/api/SpectrumWS');
 
+    
+
       newSocket.addEventListener('message', (event) => {
         const data = JSON.parse(event.data);
 
-      
+        console.log(data)
+
         //** this will udapte the data for our state  */
         setSocket({
           icon: 'ep:data-line',
