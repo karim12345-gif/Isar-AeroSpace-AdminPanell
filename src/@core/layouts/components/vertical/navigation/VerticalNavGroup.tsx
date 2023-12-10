@@ -186,55 +186,56 @@ const VerticalNavGroup = (props: Props) => {
           disablePadding
           className='nav-group'
           onClick={handleGroupClick}
-          sx={{
-            mt: 1.5,
-            flexDirection: 'column',
-            transition: 'padding .25s ease-in-out',
-            px: theme =>
-              parent && item.children
-                ? '0 !important'
-                : `${theme.spacing(navCollapsed && !navHover ? 2 : 3)} !important`
-          }}
+          sx={{ mt: 1, px: '0 !important', flexDirection: 'column' }}
         >
           <ListItemButton
             className={clsx({
               'Mui-selected': groupActive.includes(item.title) || currentActiveGroup.includes(item.title)
             })}
             sx={{
-              py: 2.25,
-              width: '100%',
-              borderRadius: '8px',
-              transition: 'padding-left .25s ease-in-out',
-              pr: navCollapsed && !navHover ? (collapsedNavWidth - navigationBorderWidth - 24 - 16) / 8 : 3,
-              pl: navCollapsed && !navHover ? (collapsedNavWidth - navigationBorderWidth - 24 - 16) / 8 : 4,
+              py: 2,
+              mx: 3.5,
+              borderRadius: 1,
+              width: theme => `calc(100% - ${theme.spacing(3.5 * 2)})`,
+              transition: 'padding-left .25s ease-in-out, padding-right .25s ease-in-out',
+              px: navCollapsed && !navHover ? (collapsedNavWidth - navigationBorderWidth - 22 - 28) / 8 : 4,
+              '&:hover': {
+                backgroundColor: 'action.hover'
+              },
+              '& .MuiTypography-root, & :not(.menu-item-meta) > svg': {
+                color: 'text.secondary'
+              },
               '&.Mui-selected': {
                 backgroundColor: 'action.selected',
                 '&:hover': {
                   backgroundColor: 'action.selected'
-                }
-              },
-              '&.Mui-selected.Mui-focusVisible': {
-                backgroundColor: 'action.focus',
-                '&:hover': {
-                  backgroundColor: 'action.focus'
+                },
+                '& .MuiTypography-root, & :not(.menu-item-meta) > svg': {
+                  color: 'text.primary'
+                },
+                '& .menu-item-meta > svg': {
+                  color: 'text.secondary'
+                },
+                '&.Mui-focusVisible': {
+                  backgroundColor: 'action.focus',
+                  '&:hover': {
+                    backgroundColor: 'action.focus'
+                  }
                 }
               }
             }}
           >
-            {isSubToSub ? null : (
-              <ListItemIcon
-                sx={{
-                  transition: 'margin .25s ease-in-out',
-                  ...(parent && navCollapsed && !navHover ? {} : { mr: 2 }),
-                  ...(navCollapsed && !navHover ? { mr: 0 } : {}), // this condition should come after (parent && navCollapsed && !navHover) condition for proper styling
-                  ...(parent && item.children ? { ml: 2, mr: 4 } : {}),
-                  color: parent && item.children ? 'text.secondary' : 'text.primary'
-                }}
-              >
-                <UserIcon icon={icon as string} {...(parent && { fontSize: '0.5rem' })} />
-              </ListItemIcon>
-            )}
-            <MenuItemTextWrapper sx={{ ...menuGroupCollapsedStyles, ...(isSubToSub ? { ml: 8 } : {}) }}>
+            <ListItemIcon
+              sx={{
+                transition: 'margin .25s ease-in-out',
+                ...(parent && navCollapsed && !navHover ? {} : { mr: 2 }),
+                ...(navCollapsed && !navHover ? { mr: 0 } : {}), // this condition should come after (parent && navCollapsed && !navHover) condition for proper styling
+                ...(parent && item.children ? { ml: 1.5, mr: 3.5 } : {})
+              }}
+            >
+              <UserIcon icon={icon as string} {...(parent && { fontSize: '0.625rem' })} />
+            </ListItemIcon>
+            <MenuItemTextWrapper sx={{ ...menuGroupCollapsedStyles, ...(isSubToSub ? { ml: 2 } : {}) }}>
               <Typography
                 {...((themeConfig.menuTextTruncate || (!themeConfig.menuTextTruncate && navCollapsed && !navHover)) && {
                   noWrap: true
@@ -248,6 +249,7 @@ const VerticalNavGroup = (props: Props) => {
                   display: 'flex',
                   alignItems: 'center',
                   '& svg': {
+                    color: 'text.disabled',
                     transition: 'transform .25s ease-in-out',
                     ...(groupActive.includes(item.title) && {
                       transform: direction === 'ltr' ? 'rotate(90deg)' : 'rotate(-90deg)'
@@ -260,10 +262,15 @@ const VerticalNavGroup = (props: Props) => {
                     size='small'
                     label={item.badgeContent}
                     color={item.badgeColor || 'primary'}
-                    sx={{ mr: 1.5, '& .MuiChip-label': { px: 2.5, lineHeight: 1.385, textTransform: 'capitalize' } }}
+                    sx={{
+                      mr: 2,
+                      height: 22,
+                      minWidth: 22,
+                      '& .MuiChip-label': { px: 1.5, textTransform: 'capitalize' }
+                    }}
                   />
                 ) : null}
-                <Icon icon={direction === 'ltr' ? 'mdi:chevron-right' : 'mdi:chevron-left'} />
+                <Icon fontSize='1.125rem' icon={direction === 'ltr' ? 'tabler:chevron-right' : 'tabler:chevron-left'} />
               </Box>
             </MenuItemTextWrapper>
           </ListItemButton>

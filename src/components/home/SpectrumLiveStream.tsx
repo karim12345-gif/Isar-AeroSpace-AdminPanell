@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-
 // ** Custom Component Import
 import { ThemeColor } from 'src/@core/layouts/types'
 
@@ -16,54 +15,43 @@ import toast from 'react-hot-toast'
 export interface WebSocketLiveData {
   icon: string
   color: ThemeColor
-  Velocity: number;
-  Altitude: number;
-  Temperature: number;
-  StatusMessage: string;
-  IsAscending: boolean;
-  IsActionRequired: boolean;
+  Velocity: number
+  Altitude: number
+  Temperature: number
+  StatusMessage: string
+  IsAscending: boolean
+  IsActionRequired: boolean
 }
-
 
 const SpectrumLiveStream = () => {
   // ** States
-  const [socket, setSocket] = useState<WebSocketLiveData | undefined>();
+  const [socket, setSocket] = useState<WebSocketLiveData | undefined>()
 
   // ** Hooks
   const theme = useTheme()
 
-
-  
   const handleActivation = (data: WebSocketLiveData) => {
-   
     // If isActivated is true and action is required, show a toast
     if (data?.IsActionRequired === true) {
       toast.success('Action is required!', {
         position: 'top-right',
-        duration: 5000, // 5 seconds
-        
-       
-      });
-    } else if (data?.IsActionRequired === false){
+        duration: 5000 // 5 seconds
+      })
+    } else if (data?.IsActionRequired === false) {
       toast.error('Action is not required!', {
         position: 'top-right',
-        duration: 3000, // 5 seconds
-       
-      });
+        duration: 3000 // 5 seconds
+      })
     }
-  };
-
+  }
 
   const getSpectrumLiveData = () => {
     try {
-      const newSocket = new WebSocket('wss://webfrontendassignment-isaraerospace.azurewebsites.net/api/SpectrumWS');
+      const newSocket = new WebSocket('wss://webfrontendassignment-isaraerospace.azurewebsites.net/api/SpectrumWS')
 
-    
+      newSocket.addEventListener('message', event => {
+        const data = JSON.parse(event.data)
 
-      newSocket.addEventListener('message', (event) => {
-        const data = JSON.parse(event.data);
-
-        
         //** this will udapte the data for our state  */
         setSocket({
           icon: 'ep:data-line',
@@ -74,59 +62,49 @@ const SpectrumLiveStream = () => {
           StatusMessage: data.StatusMessage,
           IsAscending: data.IsAscending,
           IsActionRequired: data.IsActionRequired
-        });
+        })
 
-
-        // if action is reuqired === true clsoe the socket connection 
+        // if action is reuqired === true clsoe the socket connection
         if (data.IsActionRequired === true) {
-          newSocket.close();
+          newSocket.close()
         }
 
-           // receiving WebSocket data
-           handleActivation(data);
-      });
+        // receiving WebSocket data
+        handleActivation(data)
+      })
 
       return () => {
         if (newSocket.readyState === WebSocket.OPEN) {
-          newSocket.close();
+          newSocket.close()
         }
-      };
+      }
     } catch (error) {
-      console.error('Error creating WebSocket:', error);
+      console.error('Error creating WebSocket:', error)
     }
-  };
-
-
-
-
+  }
 
   useEffect(() => {
     getSpectrumLiveData()
   }, []) // empty dependency array to run effect only once on mount
 
-
-
   const cardData: WebSocketLiveData[] = socket
-  ? [
-      {
-        icon: 'ep:data-line',
-        color: 'primary',
-        Velocity: socket.Velocity,
-        Altitude: socket.Altitude,
-        Temperature: socket.Temperature,
-        StatusMessage: socket.StatusMessage,
-        IsAscending: socket.IsAscending,
-        IsActionRequired: socket.IsActionRequired
-      }
-    ]
-  : [];
-
+    ? [
+        {
+          icon: 'ep:data-line',
+          color: 'primary',
+          Velocity: socket.Velocity,
+          Altitude: socket.Altitude,
+          Temperature: socket.Temperature,
+          StatusMessage: socket.StatusMessage,
+          IsAscending: socket.IsAscending,
+          IsActionRequired: socket.IsActionRequired
+        }
+      ]
+    : []
 
   const temperatureData: number | undefined = socket?.Temperature ?? 0
   const altitudeData: number | undefined = socket?.Altitude ?? 0
   const velocityData: number | undefined = socket?.Velocity ?? 0
-
-  
 
   //? an array of objects that has all data
   const seriesData = [
@@ -251,8 +229,7 @@ const SpectrumLiveStream = () => {
                     </Box>
 
                     {/* Icon */}
-                    {/* <Tooltip title={item.tooltip}> */}
-                    <Tooltip title={'sss'}>
+                    <Tooltip title={item.StatusMessage}>
                       <IconButton>
                         <Icon icon='mdi:question-mark-circle-outline' />
                       </IconButton>
