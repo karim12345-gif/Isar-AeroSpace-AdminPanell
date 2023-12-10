@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { GetSpectrumStatus } from 'src/types'
+
 
 // ** Custom Component Import
 import { ThemeColor } from 'src/@core/layouts/types'
+
 import { Box, Card, CardContent, CardHeader, Fab, Grid, IconButton, Tooltip, Typography, useTheme } from '@mui/material'
 import { ApexOptions } from 'apexcharts'
 import CustomChip from 'src/@core/components/mui/chip'
@@ -11,90 +12,89 @@ import ReactApexcharts from 'src/@core/components/react-apexcharts'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-export interface CardData {
+export interface WebSocketLiveData {
   icon: string
-  tooltip: string
   color: ThemeColor
-  velocity: number
-  altitude: number
-  temperature: number
-  statusMessage: string
-  isAscending: boolean
-  isActionRequired: boolean
+  Velocity: number;
+  Altitude: number;
+  Temperature: number;
+  StatusMessage: string;
+  IsAscending: boolean;
+  IsActionRequired: boolean;
 }
+
+
 const SpectrumLiveStream = () => {
   // ** States
-  const [socket, setSocket] = useState<GetSpectrumStatus>()
+  const [socket, setSocket] = useState<WebSocketLiveData | undefined>();
 
   // ** Hooks
   const theme = useTheme()
 
-  //** function that will handle the fetching of the websocket data
+
   const getSpectrumLiveData = () => {
     try {
-      const newSocket = new WebSocket('wss://webfrontendassignment-isaraerospace.azurewebsites.net/api/SpectrumWS')
+      const newSocket = new WebSocket('wss://webfrontendassignment-isaraerospace.azurewebsites.net/api/SpectrumWS');
 
-      newSocket.addEventListener('message', event => {
-        console.log('WebSocket message received:', event.data)
+      newSocket.addEventListener('message', (event) => {
+        const data = JSON.parse(event.data);
 
-        const data = JSON.parse(event.data)
+      
+        //** this will udapte the data for our state  */
+        setSocket({
+          icon: 'ep:data-line',
+          color: 'primary',
+          Velocity: data.Velocity,
+          Altitude: data.Altitude,
+          Temperature: data.Temperature,
+          StatusMessage: data.StatusMessage,
+          IsAscending: data.IsAscending,
+          IsActionRequired: data.IsActionRequired
+        });
 
-        setSocket(data)
 
-        // This piece of code is executed when the WebSocket component receives a message,
-        // and the data.IsActionRequired property is true
-        // then we inform the parent component
-        if (data.IsActionRequired) {
-          // Notify the parent component (SpectrumStatistics) about the action required
-          // onActionRequiredUpdate(true)
-
-          // Close the WebSocket connection
-          newSocket.close()
+        // if action is reuqired === true clsoe the socket connection 
+        if (data.IsActionRequired === true) {
+          newSocket.close();
         }
-      })
+      });
 
       return () => {
-        // Close the WebSocket connection when the component unmounts
         if (newSocket.readyState === WebSocket.OPEN) {
-          newSocket.close()
+          newSocket.close();
         }
-      }
+      };
     } catch (error) {
-      console.error('Error creating WebSocket:', error)
+      console.error('Error creating WebSocket:', error);
     }
-  }
-
+  };
   useEffect(() => {
     getSpectrumLiveData()
   }, []) // empty dependency array to run effect only once on mount
 
-  // Check if socket is of type GetSpectrumStatus before accessing its properties
 
-  if (socket && 'Altitude' in socket) {
-    console.log('socket Altitude:', socket.Altitude)
-  }
 
-  const cardData: CardData[] = socket
-    ? [
-        {
-          icon: 'ep:data-line',
-          color: 'primary',
-          tooltip: socket.statusMessage,
-          velocity: socket.velocity,
-          altitude: socket.altitude,
-          temperature: socket.temperature,
-          statusMessage: socket.statusMessage,
-          isAscending: socket.isAscending,
-          isActionRequired: socket.isActionRequired
-        }
-      ]
-    : []
+  const cardData: WebSocketLiveData[] = socket
+  ? [
+      {
+        icon: 'ep:data-line',
+        color: 'primary',
+        Velocity: socket.Velocity,
+        Altitude: socket.Altitude,
+        Temperature: socket.Temperature,
+        StatusMessage: socket.StatusMessage,
+        IsAscending: socket.IsAscending,
+        IsActionRequired: socket.IsActionRequired
+      }
+    ]
+  : [];
 
-  const temperatureData: number | undefined = socket?.temperature ?? 0
-  const altitudeData: number | undefined = socket?.altitude ?? 0
-  const velocityData: number | undefined = socket?.velocity ?? 0
 
-  console.log('temperatureData', temperatureData)
+  const temperatureData: number | undefined = socket?.Temperature ?? 0
+  const altitudeData: number | undefined = socket?.Altitude ?? 0
+  const velocityData: number | undefined = socket?.Velocity ?? 0
+
+  
 
   //? an array of objects that has all data
   const seriesData = [
@@ -207,19 +207,20 @@ const SpectrumLiveStream = () => {
                     {/* Temperature */}
                     <Box display={'flex'} gap={2}>
                       <Typography sx={{ color: 'text.secondary' }}>Temperature:</Typography>
-                      {item.temperature ? (
+                      {item.Temperature ? (
                         <CustomChip
                           rounded
                           size='small'
                           skin='light'
-                          color={item.temperature < 0 ? 'error' : 'success'}
-                          label={item.temperature < 0 ? `${item.temperature}%` : `+ ${item.temperature}%`}
+                          color={item.Temperature < 0 ? 'error' : 'success'}
+                          label={item.Temperature < 0 ? `${item.Temperature}%` : `+ ${item.Temperature}%`}
                         />
                       ) : null}
                     </Box>
 
                     {/* Icon */}
-                    <Tooltip title={item.tooltip}>
+                    {/* <Tooltip title={item.tooltip}> */}
+                    <Tooltip title={'sss'}>
                       <IconButton>
                         <Icon icon='mdi:question-mark-circle-outline' />
                       </IconButton>
@@ -228,12 +229,12 @@ const SpectrumLiveStream = () => {
 
                   {/* Velocity */}
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                    {typeof item.velocity === 'number' ? (
+                    {typeof item.Velocity === 'number' ? (
                       <Typography variant='h6' sx={{ mb: 1 }}>
-                        {`velocity: ${item.velocity}`}
+                        {`Velocity: ${item.Velocity}`}
                       </Typography>
                     ) : (
-                      item.velocity // JSX element
+                      item.Velocity // JSX element
                     )}
                     <Fab size='small' color={item.color} sx={{ color: 'text.disabled' }}>
                       <Icon icon={item.icon} color='white' />
@@ -243,13 +244,13 @@ const SpectrumLiveStream = () => {
                   {/* Temperature */}
                   <Box sx={{ mt: 5 }} display={'flex'} gap={2}>
                     <Typography sx={{ color: 'text.secondary' }}>Altitude</Typography>
-                    {item.altitude ? (
+                    {item.Altitude ? (
                       <CustomChip
                         rounded
                         size='small'
                         skin='light'
-                        color={item.altitude < 0 ? 'error' : 'success'}
-                        label={item.altitude < 0 ? `${item.altitude}%` : `+ ${item.altitude}%`}
+                        color={item.Altitude < 0 ? 'error' : 'success'}
+                        label={item.Altitude < 0 ? `${item.Altitude}%` : `+ ${item.Altitude}%`}
                       />
                     ) : null}
                   </Box>
@@ -257,7 +258,7 @@ const SpectrumLiveStream = () => {
                     {/* ascending status*/}
                     <Typography variant='body2' sx={{ color: 'text.secondary' }}>
                       Vehicle Status :{' '}
-                      {` Vehicle Status:${!item.isAscending} ` ? (
+                      {` Vehicle Status:${!item.IsAscending} ` ? (
                         <CustomChip rounded size='small' skin='light' color='success' label='Ascending' />
                       ) : (
                         <CustomChip
@@ -274,7 +275,7 @@ const SpectrumLiveStream = () => {
                     <Typography variant='body2' sx={{ color: 'text.secondary' }}>
                       {/* if the action is not true, then no action required  */}
                       Action Required Status :{' '}
-                      {!item.isActionRequired ? (
+                      {!item.IsActionRequired ? (
                         <CustomChip rounded size='small' skin='light' color='success' label='No Action Required' />
                       ) : (
                         <CustomChip
@@ -298,7 +299,7 @@ const SpectrumLiveStream = () => {
               <Card>
                 <CardHeader title='Alert 🚀'></CardHeader>
                 <CardContent>
-                  <Typography sx={{ mb: 2, color: 'red' }}>Current Status: {item.statusMessage}</Typography>
+                  <Typography sx={{ mb: 2, color: 'red' }}>Current Status: {item.StatusMessage}</Typography>
                 </CardContent>
               </Card>
             </Grid>
