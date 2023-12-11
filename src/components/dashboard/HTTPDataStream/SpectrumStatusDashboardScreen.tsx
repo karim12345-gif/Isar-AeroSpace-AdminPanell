@@ -26,6 +26,7 @@ const SpectrumStatusDashboardScreen = () => {
   // ** States
   const [spectrumOverviewNumbers, setSpectrumOverviewNumbers] = useState<GetSpectrumStatus>()
   const [isActionLoading, setIsActionLoading] = useState(false)
+  const [isStatuesUpdated, setIsStatuesUpdated] = useState(false)
 
   // ** Hooks
   const router = useRouter()
@@ -35,62 +36,33 @@ const SpectrumStatusDashboardScreen = () => {
   const getSpectrumStatusData = async () => {
     const response = await new AeroSpaceController(router).GetSpectrumStatus()
 
-    console.log('response here:', response)
-
     //!! if there is no response return
     if (!response) return
 
     setSpectrumOverviewNumbers(response)
   }
 
+  //* this function will be responsible for changing the is required status
   const handelIsRequiredAction = async () => {
-    try {
-      // Set loading state to true while the action is being performed
-      setIsActionLoading(true)
+    setIsActionLoading(true)
 
-      // Perform the action
-      const response = await new AeroSpaceController(router).GetIsRequiredAction()
+    const statusResponse = await new AeroSpaceController(router).GetIsRequiredAction()
 
-      console.log('response', response)
-
-      if (spectrumOverviewNumbers?.isActionRequired === true) {
-        toast.success('Action successfully completed!', { id: 'loading' })
-        setIsActionLoading(true)
-
-        // // Toggle the value of isActionRequired in the state
-        setSpectrumOverviewNumbers(prevNumbers =>
-          prevNumbers
-            ? {
-                ...prevNumbers,
-                isActionRequired: !prevNumbers.isActionRequired
-              }
-            : undefined
-        )
-
-        // Optionally, you can refresh the data or perform any additional actions
-        getSpectrumStatusData()
-      } else {
-        // Handle the case where the API call was not successful
-        toast.error('Action Unsuccessfully completed!', { id: 'loading' })
-
-        setIsActionLoading(false)
-
-        // console.error("API call failed");
-      }
-    } catch (error) {
-      // Handle errors from the API call
-      console.error('Error in API call', error)
-    } finally {
-      // After the action is complete, reset the loading state
-      setIsActionLoading(false)
+    if (statusResponse === 200) {
+      setIsStatuesUpdated(true)
+      toast.success('Action successfully completed!', { id: 'loading' })
+    } else {
+      setIsStatuesUpdated(false)
+      toast.error('Action Unsuccessfully completed!', { id: 'loading' })
     }
+    setIsActionLoading(false)
   }
 
   useEffect(() => {
     getSpectrumStatusData()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isStatuesUpdated])
 
   //?? inheriting from our interface so we can use it with out use state
   const cardData: CardData[] = spectrumOverviewNumbers

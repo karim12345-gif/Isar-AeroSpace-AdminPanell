@@ -30,6 +30,7 @@ const SpectrumLiveStream = () => {
   const [socket, setSocket] = useState<WebSocketLiveData | undefined>()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isActionLoading, setIsActionLoading] = useState(false)
+  const [isStatuesUpdated, setIsStatuesUpdated] = useState(false)
 
   // ** Hooks
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -84,52 +85,25 @@ const SpectrumLiveStream = () => {
     }
   }
 
+  //* this function will be responsible for changing the is required status
   const handelIsRequiredAction = async () => {
-    try {
-      // Set loading state to true while the action is being performed
-      setIsActionLoading(true)
+    setIsActionLoading(true)
 
-      // Perform the action
-      const response = await new AeroSpaceController(router).GetIsRequiredAction()
+    const statusResponse = await new AeroSpaceController(router).GetIsRequiredAction()
 
-      console.log('response', response)
-
-      if (socket?.IsActionRequired === true) {
-        toast.success('Action successfully completed!', { id: 'loading' })
-        setIsActionLoading(true)
-
-        // Toggle the value of isActionRequired in the state
-        setSocket(prevNumbers =>
-          prevNumbers
-            ? {
-                ...prevNumbers,
-                isActionRequired: !prevNumbers.IsActionRequired
-              }
-            : undefined
-        )
-
-        // Optionally, you can refresh the data or perform any additional actions
-        getSpectrumLiveData()
-      } else {
-        // Handle the case where the API call was not successful
-        toast.error('Action Unsuccessfully completed!', { id: 'loading' })
-
-        setIsActionLoading(false)
-
-        // console.error("API call failed");
-      }
-    } catch (error) {
-      // Handle errors from the API call
-      console.error('Error in API call', error)
-    } finally {
-      // After the action is complete, reset the loading state
-      setIsActionLoading(false)
+    if (statusResponse === 200) {
+      setIsStatuesUpdated(true)
+      toast.success('Action successfully completed!', { id: 'loading' })
+    } else {
+      setIsStatuesUpdated(false)
+      toast.error('Action Unsuccessfully completed!', { id: 'loading' })
     }
+    setIsActionLoading(false)
   }
 
   useEffect(() => {
     getSpectrumLiveData()
-  }, []) // empty dependency array to run effect only once on mount
+  }, [isStatuesUpdated]) // empty dependency array to run effect only once on mount
 
   const cardData: WebSocketLiveData[] = socket
     ? [

@@ -17,7 +17,6 @@ export default class RunwayController {
   //** This method will be responsible for handling the response and data */
   GetSpectrumStatus = async (): Promise<GetSpectrumStatus | undefined> => {
     try {
-
       const response = await fetch(AeroSpaceApi.getSpectrumStatus)
 
       // ** Assuming your API returns JSON data
@@ -86,16 +85,12 @@ export default class RunwayController {
 
   GetIsRequiredAction = async () => {
     try {
-
       const response = await fetch(AeroSpaceApi.getHandelSpectrumActionStatus)
-
-      // ** Assuming your API returns JSON data
-      const body = await response.json()
 
       // ** If the result is 200, then response is successful
       if (response.status === 200) {
         // Successful login
-        return body
+        return response.status
       }
     } catch (error: any) {
       // ** If there is no response, then redirect to error page
