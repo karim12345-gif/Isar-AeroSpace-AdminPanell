@@ -42,26 +42,43 @@ const SpectrumStatusDashboardScreen = () => {
   }
 
 
-  const handelIsRequriedAction =async () => {
-    
-    // Set loading state to true while the action is being performed
-    setIsActionLoading(true);
+  const handelIsRequriedAction = async () => {
+    try {
+      // Set loading state to true while the action is being performed
+      setIsActionLoading(true);
+  
+      // Perform the action using a POST request
+      const response = await new AeroSpaceController(router).GetIsRequiredAction();
+  
+      console.log("response", response);
+  
+      if (spectrumOverviewNumbers?.isActionRequired === true) {
 
-    // Perform the action, for example, making an API call
-    // You can replace the following line with your actual action logic
-    const response = await new AeroSpaceController(router).GetIsRequiredAction();
+        setIsActionLoading(true)
 
-    console.log("response",response)
+        // // Toggle the value of isActionRequired in the state
+        setSpectrumOverviewNumbers((prevNumbers) => prevNumbers ? {
+          ...prevNumbers,
+          isActionRequired: !prevNumbers.isActionRequired,
+        } : undefined);
+  
+        // Optionally, you can refresh the data or perform any additional actions
+        getSpectrumStatusData();
+      } else  {
+        // Handle the case where the API call was not successful
+        setIsActionLoading(false)
 
-
-    if(!response) return
-
-    // After the action is complete, reset the loading state
-    setIsActionLoading(false);
-
-    // Optionally, you can refresh the data or perform any additional actions
-    getSpectrumStatusData();
-  }
+        // console.error("API call failed");
+      }
+    } catch (error) {
+      // Handle errors from the API call
+      console.error("Error in API call", error);
+    } finally {
+      // After the action is complete, reset the loading state
+      setIsActionLoading(false);
+    }
+  };
+  
 
 
 
