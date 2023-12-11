@@ -59,6 +59,7 @@ import 'src/iconify-bundle/icons-bundle-react'
 // ** Global css styles
 import '../../styles/globals.css'
 
+
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
   Component: NextPage
@@ -114,6 +115,7 @@ const App = (props: ExtendedAppProps) => {
   const aclAbilities = Component.acl ?? defaultACLObj
 
   return (
+   
     <CacheProvider value={emotionCache}>
       <Head>
         <title>{`${themeConfig.templateName}`}</title>
@@ -146,6 +148,8 @@ const App = (props: ExtendedAppProps) => {
         </SettingsProvider>
       </AuthProvider>
     </CacheProvider>
+    
+    
   )
 }
 
