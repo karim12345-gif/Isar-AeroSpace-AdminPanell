@@ -20,12 +20,12 @@ import { useRouter } from 'next/router'
 import { AeroSpaceController } from 'src/services/controllers'
 import { CardData, GetSpectrumStatus } from 'src/types'
 import { ApexOptions } from 'apexcharts'
-
+import toast from 'react-hot-toast'
 
 const SpectrumStatusDashboardScreen = () => {
   // ** States
   const [spectrumOverviewNumbers, setSpectrumOverviewNumbers] = useState<GetSpectrumStatus>()
-  const [isActionLoading, setIsActionLoading] = useState(false);
+  const [isActionLoading, setIsActionLoading] = useState(false)
 
   // ** Hooks
   const router = useRouter()
@@ -35,52 +35,56 @@ const SpectrumStatusDashboardScreen = () => {
   const getSpectrumStatusData = async () => {
     const response = await new AeroSpaceController(router).GetSpectrumStatus()
 
+    console.log('response here:', response)
+
     //!! if there is no response return
     if (!response) return
 
     setSpectrumOverviewNumbers(response)
   }
 
-
-  const handelIsRequriedAction = async () => {
+  const handelIsRequiredAction = async () => {
     try {
       // Set loading state to true while the action is being performed
-      setIsActionLoading(true);
-  
-      // Perform the action using a POST request
-      const response = await new AeroSpaceController(router).GetIsRequiredAction();
-  
-      console.log("response", response);
-  
-      if (spectrumOverviewNumbers?.isActionRequired === true) {
+      setIsActionLoading(true)
 
+      // Perform the action
+      const response = await new AeroSpaceController(router).GetIsRequiredAction()
+
+      console.log('response', response)
+
+      if (spectrumOverviewNumbers?.isActionRequired === true) {
+        toast.success('Action successfully completed!', { id: 'loading' })
         setIsActionLoading(true)
 
         // // Toggle the value of isActionRequired in the state
-        setSpectrumOverviewNumbers((prevNumbers) => prevNumbers ? {
-          ...prevNumbers,
-          isActionRequired: !prevNumbers.isActionRequired,
-        } : undefined);
-  
+        setSpectrumOverviewNumbers(prevNumbers =>
+          prevNumbers
+            ? {
+                ...prevNumbers,
+                isActionRequired: !prevNumbers.isActionRequired
+              }
+            : undefined
+        )
+
         // Optionally, you can refresh the data or perform any additional actions
-        getSpectrumStatusData();
-      } else  {
+        getSpectrumStatusData()
+      } else {
         // Handle the case where the API call was not successful
+        toast.error('Action Unsuccessfully completed!', { id: 'loading' })
+
         setIsActionLoading(false)
 
         // console.error("API call failed");
       }
     } catch (error) {
       // Handle errors from the API call
-      console.error("Error in API call", error);
+      console.error('Error in API call', error)
     } finally {
       // After the action is complete, reset the loading state
-      setIsActionLoading(false);
+      setIsActionLoading(false)
     }
-  };
-  
-
-
+  }
 
   useEffect(() => {
     getSpectrumStatusData()
@@ -217,7 +221,7 @@ const SpectrumStatusDashboardScreen = () => {
               <Card>
                 <CardContent>
                   <Box sx={{ mb: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                     {/* Temperature */}
+                    {/* Temperature */}
                     <Box display={'flex'} gap={2}>
                       <Typography sx={{ color: 'text.secondary' }}>Temperature:</Typography>
                       {item.temperature ? (
@@ -231,41 +235,40 @@ const SpectrumStatusDashboardScreen = () => {
                       ) : null}
                     </Box>
 
-                  {/* Icon */}
-                     <Tooltip title={item.tooltip}>
+                    {/* Icon */}
+                    <Tooltip title={item.tooltip}>
                       <IconButton>
                         <Icon icon='mdi:question-mark-circle-outline' />
                       </IconButton>
                     </Tooltip>
                   </Box>
-                      {/* Velocity */}
-                      <Box sx={{ mt: 5 }} display={'flex'} gap={10}>
-                                                          <Typography sx={{ color: 'text.secondary' }}>Velocity:</Typography>
-                                                          {item.velocity ? (
-                                                            <CustomChip
-                                                              rounded
-                                                              size='medium'
-                                                              skin='light'
-                                                              color={item.velocity < 0 ? 'info' : 'warning'}
-                                                              label={item.velocity < 0 ? `${item.velocity}%` : `+ ${item.velocity}%`}
-                                                            />
-                                                          ) : null}
-                      </Box>
+                  {/* Velocity */}
+                  <Box sx={{ mt: 5 }} display={'flex'} gap={10}>
+                    <Typography sx={{ color: 'text.secondary' }}>Velocity:</Typography>
+                    {item.velocity ? (
+                      <CustomChip
+                        rounded
+                        size='medium'
+                        skin='light'
+                        color={item.velocity < 0 ? 'info' : 'warning'}
+                        label={item.velocity < 0 ? `${item.velocity}%` : `+ ${item.velocity}%`}
+                      />
+                    ) : null}
+                  </Box>
 
-                      {/* Altitude */}
-                      <Box sx={{ mt: 5 }} display={'flex'} gap={10}>
-                  <Typography sx={{ color: 'text.secondary' }}>Altitude:</Typography>
-                  {item.altitude ? (
-                    <CustomChip
-                      rounded
-                      size='small'
-                      skin='light'
-                      color={item.altitude < 0 ? 'error' : 'success'}
-                      label={item.altitude < 0 ? `${item.altitude}%` : `+ ${item.altitude}%`}
-                    />
-                  ) : null}
-                      </Box>
-
+                  {/* Altitude */}
+                  <Box sx={{ mt: 5 }} display={'flex'} gap={10}>
+                    <Typography sx={{ color: 'text.secondary' }}>Altitude:</Typography>
+                    {item.altitude ? (
+                      <CustomChip
+                        rounded
+                        size='small'
+                        skin='light'
+                        color={item.altitude < 0 ? 'error' : 'success'}
+                        label={item.altitude < 0 ? `${item.altitude}%` : `+ ${item.altitude}%`}
+                      />
+                    ) : null}
+                  </Box>
 
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 8 }}>
                     {/* ascending status*/}
@@ -301,16 +304,15 @@ const SpectrumStatusDashboardScreen = () => {
                       )}
                     </Typography>
 
-                    
-                 {/* Action button */}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disabled={!item?.isActionRequired || isActionLoading}
-                  onClick={handelIsRequriedAction}
-                >
-                  {isActionLoading ? 'Taking Action...' : 'Take Action'}
-                </Button>
+                    {/* Action button */}
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      disabled={!item?.isActionRequired || isActionLoading}
+                      onClick={handelIsRequiredAction}
+                    >
+                      {isActionLoading ? 'Taking Action...' : 'Take Action'}
+                    </Button>
                   </Box>
                 </CardContent>
               </Card>

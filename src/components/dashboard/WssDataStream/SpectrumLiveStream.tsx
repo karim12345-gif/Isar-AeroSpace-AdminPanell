@@ -1,7 +1,18 @@
 import { useEffect, useState } from 'react'
 
-
-import { Box, Button, Card, CardContent, CardHeader, Fab, Grid, IconButton, Tooltip, Typography, useTheme } from '@mui/material'
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Fab,
+  Grid,
+  IconButton,
+  Tooltip,
+  Typography,
+  useTheme
+} from '@mui/material'
 import { ApexOptions } from 'apexcharts'
 import CustomChip from 'src/@core/components/mui/chip'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
@@ -14,14 +25,11 @@ import { WebSocketLiveData } from 'src/types'
 import { AeroSpaceController } from 'src/services/controllers'
 import { useRouter } from 'next/router'
 
-
-
 const SpectrumLiveStream = () => {
   // ** States
   const [socket, setSocket] = useState<WebSocketLiveData | undefined>()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isActionLoading, setIsActionLoading] = useState(false);
-
+  const [isActionLoading, setIsActionLoading] = useState(false)
 
   // ** Hooks
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -34,11 +42,6 @@ const SpectrumLiveStream = () => {
       toast.success('Action is required!', {
         position: 'top-right',
         duration: 5000 // 5 seconds
-      })
-    } else if (data?.IsActionRequired === false) {
-      toast.error('Action is not required!', {
-        position: 'top-right',
-        duration: 3000 // 5 seconds
       })
     }
   }
@@ -62,7 +65,7 @@ const SpectrumLiveStream = () => {
           IsActionRequired: data.IsActionRequired
         })
 
-        // if action is reuqired === true clsoe the socket connection
+        // if action is required === true close the socket connection
         if (data.IsActionRequired === true) {
           newSocket.close()
         }
@@ -81,43 +84,51 @@ const SpectrumLiveStream = () => {
     }
   }
 
+  const handelIsRequiredAction = async () => {
+    try {
+      // Set loading state to true while the action is being performed
+      setIsActionLoading(true)
 
-  //* this function will be responsible for fetching the data
- // ...
+      // Perform the action
+      const response = await new AeroSpaceController(router).GetIsRequiredAction()
 
-//  const handleAction = async () => {
-//   try {
-//     const response = await new AeroSpaceController(router).GetIsRequiredAction();
+      console.log('response', response)
 
-//     if (response.ok) {
-//       setSocket((prevSocket) => ({
-//         ...prevSocket,
-//         IsActionRequired: false,
-//       }));
+      if (socket?.IsActionRequired === true) {
+        toast.success('Action successfully completed!', { id: 'loading' })
+        setIsActionLoading(true)
 
-//       toast.success('Action completed successfully!', {
-//         position: 'top-right',
-//         duration: 5000,
-//       });
-//     } else {
-//       toast.error('Failed to complete action. Please try again.', {
-//         position: 'top-right',
-//         duration: 5000,
-//       });
-//     }
-//   } catch (error) {
-//     console.error('Error handling action:', error);
-//   }
-// };
+        // Toggle the value of isActionRequired in the state
+        setSocket(prevNumbers =>
+          prevNumbers
+            ? {
+                ...prevNumbers,
+                isActionRequired: !prevNumbers.IsActionRequired
+              }
+            : undefined
+        )
 
-// ...
+        // Optionally, you can refresh the data or perform any additional actions
+        getSpectrumLiveData()
+      } else {
+        // Handle the case where the API call was not successful
+        toast.error('Action Unsuccessfully completed!', { id: 'loading' })
 
+        setIsActionLoading(false)
 
- 
-  
+        // console.error("API call failed");
+      }
+    } catch (error) {
+      // Handle errors from the API call
+      console.error('Error in API call', error)
+    } finally {
+      // After the action is complete, reset the loading state
+      setIsActionLoading(false)
+    }
+  }
+
   useEffect(() => {
     getSpectrumLiveData()
-
   }, []) // empty dependency array to run effect only once on mount
 
   const cardData: WebSocketLiveData[] = socket
@@ -237,10 +248,6 @@ const SpectrumLiveStream = () => {
     }
   }
 
-
-
-
-
   const renderCards = () => (
     <>
       <Grid container spacing={5} sx={{ ml: 1 }}>
@@ -253,7 +260,9 @@ const SpectrumLiveStream = () => {
                   <Box sx={{ mb: 1.5, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     {/* Temperature */}
                     <Box display={'flex'} gap={2}>
-                      <Typography variant='body1' sx={{ color: 'text.secondary' }}>Temperature:</Typography>
+                      <Typography variant='body1' sx={{ color: 'text.secondary' }}>
+                        Temperature:
+                      </Typography>
                       {item.Temperature ? (
                         <CustomChip
                           rounded
@@ -273,30 +282,32 @@ const SpectrumLiveStream = () => {
                     </Tooltip>
                   </Box>
 
-                
-                {/* Velocity */}
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                  <Box sx={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                    <Typography variant='body1' sx={{ color: 'text.secondary' }}>Velocity:</Typography>
-                    {item.Velocity ? (
-                      <CustomChip
-                        rounded
-                        size='small'
-                        skin='light'
-                        color={item.Velocity < 0 ? 'error' : 'success'}
-                        label={item.Velocity < 0 ? `${item.Velocity}%` : `+ ${item.Velocity}%`}
-                      />
-                    ) : null}
+                  {/* Velocity */}
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                    <Box sx={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                      <Typography variant='body1' sx={{ color: 'text.secondary' }}>
+                        Velocity:
+                      </Typography>
+                      {item.Velocity ? (
+                        <CustomChip
+                          rounded
+                          size='small'
+                          skin='light'
+                          color={item.Velocity < 0 ? 'error' : 'success'}
+                          label={item.Velocity < 0 ? `${item.Velocity}%` : `+ ${item.Velocity}%`}
+                        />
+                      ) : null}
+                    </Box>
+                    <Fab size='small' color={item.color} sx={{ color: 'text.disabled' }}>
+                      <Icon icon={item.icon} color='white' />
+                    </Fab>
                   </Box>
-                  <Fab size='small' color={item.color} sx={{ color: 'text.disabled' }}>
-                    <Icon icon={item.icon} color='white' />
-                  </Fab>
-                </Box>
-
 
                   {/* Altitude */}
                   <Box sx={{ mt: 5 }} display={'flex'} gap={10}>
-                    <Typography variant='body1' sx={{ color: 'text.secondary' }}>Altitude</Typography>
+                    <Typography variant='body1' sx={{ color: 'text.secondary' }}>
+                      Altitude
+                    </Typography>
                     {item.Altitude ? (
                       <CustomChip
                         rounded
@@ -329,7 +340,7 @@ const SpectrumLiveStream = () => {
                       {/* if the action is not true, then no action required  */}
                       Action Required Status :{' '}
                       {!item.IsActionRequired ? (
-                        <CustomChip rounded   size='medium' skin='light' color='success' label='No Action Required' />
+                        <CustomChip rounded size='medium' skin='light' color='success' label='No Action Required' />
                       ) : (
                         <CustomChip
                           rounded
@@ -341,17 +352,15 @@ const SpectrumLiveStream = () => {
                       )}
                     </Typography>
 
-
-                 {/* Action button */}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disabled={!socket?.IsActionRequired || isActionLoading}
-
-                  // onClick={handleAction}
-                >
-                  {isActionLoading ? 'Taking Action...' : 'Take Action'}
-                </Button>
+                    {/* Action button */}
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      disabled={!socket?.IsActionRequired || isActionLoading}
+                      onClick={handelIsRequiredAction}
+                    >
+                      {isActionLoading ? 'Taking Action...' : 'Take Action'}
+                    </Button>
                   </Box>
                 </CardContent>
               </Card>

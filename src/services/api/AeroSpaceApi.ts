@@ -1,4 +1,5 @@
 export default {
   getSpectrumStatus: `https://webfrontendassignment-isaraerospace.azurewebsites.net/api/SpectrumStatus`,
-  getHandelSpectrumActionStatus: 'https://webfrontendassignment-isaraerospace.azurewebsites.net/api/ActOnSpectrum'
+  getHandelSpectrumActionStatus:
+    'https://webfrontendassignment-isaraerospace.azurewebsites.net/api/ActOnSpectrum?isActionRequired'
 }
