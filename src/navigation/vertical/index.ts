@@ -5,7 +5,7 @@ const navigation = (): VerticalNavItemsType => {
   return [
     {
       title: 'Spectrum Dashboard',
-      path: '/home',
+      path: '/dashboard',
       icon: 'carbon:dashboard'
     },
     {
