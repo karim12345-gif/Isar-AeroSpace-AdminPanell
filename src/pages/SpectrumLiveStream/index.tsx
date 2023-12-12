@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <Grid container spacing={6} className='match-height'>
       <Grid item xs={12}>
-        <SpectrumLiveStatusDashboardScreen/>
+        <SpectrumLiveStatusDashboardScreen />
       </Grid>
     </Grid>
   )
