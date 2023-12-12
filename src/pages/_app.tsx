@@ -58,6 +58,7 @@ import 'src/iconify-bundle/icons-bundle-react'
 
 // ** Global css styles
 import '../../styles/globals.css'
+import { SpectrumStatusProvider } from 'src/context/SpectrumContext'
 
 
 // ** Extend App Props with Emotion
@@ -115,8 +116,8 @@ const App = (props: ExtendedAppProps) => {
   const aclAbilities = Component.acl ?? defaultACLObj
 
   return (
-   
-    <CacheProvider value={emotionCache}>
+    <SpectrumStatusProvider>
+        <CacheProvider value={emotionCache}>
       <Head>
         <title>{`${themeConfig.templateName}`}</title>
         <meta
@@ -148,6 +149,8 @@ const App = (props: ExtendedAppProps) => {
         </SettingsProvider>
       </AuthProvider>
     </CacheProvider>
+    </SpectrumStatusProvider>
+  
     
     
   )

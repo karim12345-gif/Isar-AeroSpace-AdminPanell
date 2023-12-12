@@ -1,50 +1,18 @@
 // Importing necessary dependencies and components
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { GetSpectrumStatus } from "src/types";
+import { useEffect } from "react";
+
 import SpectrumStatusUI from "./SpectrumStatusUI";
-import { NextRouter, useRouter } from "next/router";
-import { AeroSpaceController } from "src/services/controllers";
+
 import { Grid } from "@mui/material";
+import { useSpectrumStatus } from "src/context/SpectrumContext";
 
 //** Main component for the Spectrum Status Dashboard
 const SpectrumStatusDashboardScreen = () => {
 
 
-  //**  States (variables for managing data and loading states)
-  const [spectrumOverviewNumbers, setSpectrumOverviewNumbers] = useState<GetSpectrumStatus>();
-  const [isActionLoading, setIsActionLoading] = useState(false);
-  const [isStatuesUpdated, setIsStatuesUpdated] = useState(false);
-
- //** Initializing Next.js router and AeroSpaceController
-  const router: NextRouter = useRouter();
-  const aeroSpaceController = new AeroSpaceController(router);
-  
-  // ** Function to handel the get spectrum data
-  const getSpectrumStatusData = async () => {
-    const response = await aeroSpaceController.GetSpectrumStatus();
+  const { spectrumOverviewNumbers, isActionLoading, isStatuesUpdated, getSpectrumStatusData, handleIsRequiredAction } = useSpectrumStatus();
 
 
-    if (!response) return;
-
-    setSpectrumOverviewNumbers(response);
-  };
-
-  //** Function to handle the required action
-  const handleIsRequiredAction = async () => {
-    setIsActionLoading(true);
-
-    const statusResponse = await aeroSpaceController.GetIsRequiredAction();
-
-    if (statusResponse === 200) {
-      setIsStatuesUpdated(true);
-      toast.success('Action successfully completed!', { id: 'loading' });
-    } else {
-      setIsStatuesUpdated(false);
-      toast.error('Action Unsuccessfully completed!', { id: 'loading' });
-    }
-    setIsActionLoading(false);
-  };
 
   //**Effect hook to fetch Spectrum Status data only when isStatuesUpdated changes
   useEffect(() => {
