@@ -183,11 +183,14 @@ const LoginPage = () => {
               </Typography>
             </Box>
             <Alert icon={false} sx={{ py: 3, mb: 6, '& .MuiAlert-message': { p: 0 } }}>
+            <Typography variant='body1' sx={{ mb: 2, display: 'block', color: 'primary.main' }}>
+                  Hey , Please use these CREDINALITES to access the dashboard!
+              </Typography>
               <Typography variant='caption' sx={{ mb: 2, display: 'block', color: 'primary.main' }}>
                 {themeConfig.mode === 'light' ? (
                   <>
-                    <p style={{ color: 'red' }}>
-                      Admin: <strong style={{ color: 'darkgray' }}>admin@Isar-AeroSpace.com</strong> / Pass:{' '}
+                    <p  style={{ color: 'red' }}>
+                      Admin: <strong  style={{ color: 'darkgray' }}>admin@Isar-AeroSpace.com</strong> / Pass:{' '}
                       <strong style={{ color: 'darkgray' }}>Test@12345</strong>
                     </p>
                   </>

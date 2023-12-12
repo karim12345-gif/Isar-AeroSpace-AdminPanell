@@ -1,21 +1,28 @@
-import { NextRouter } from 'next/router'
-import toast from 'react-hot-toast'
-import { isResponseModel } from 'src/helpers'
+import { NextRouter } from 'next/router';
+import toast from 'react-hot-toast';
+import { isResponseModel } from 'src/helpers';
 
-import routes from 'src/routes'
+import routes from 'src/routes';
 
-import { GetSpectrumStatus } from 'src/types'
-import { AeroSpaceApi } from '../api'
+import { GetSpectrumStatus } from 'src/types';
+import { AeroSpaceApi } from '../api';
 
-export default class RunwayController {
-  private readonly router: NextRouter
+//** Interface for status-related methods
+interface SpectrumStatusInterface {
+  GetSpectrumStatus: () => Promise<GetSpectrumStatus | undefined>;
+}
+
+
+//**  AeroSpaceController 
+export default class AeroSpaceController implements SpectrumStatusInterface {
+  private readonly router: NextRouter;
 
   constructor(router: NextRouter) {
-    this.router = router
+    this.router = router;
   }
 
-  //** This method will be responsible for handling the response and data */
-  GetSpectrumStatus = async (): Promise<GetSpectrumStatus | undefined> => {
+  //**Implementation of getting the spectrum data
+  async GetSpectrumStatus(): Promise<GetSpectrumStatus | undefined> {
     try {
       const response = await fetch(AeroSpaceApi.getSpectrumStatus)
 
@@ -83,11 +90,12 @@ export default class RunwayController {
     }
   }
 
-  GetIsRequiredAction = async () => {
+  //** Implementation of is required action function
+  async GetIsRequiredAction() {
     try {
       const response = await fetch(AeroSpaceApi.getHandelSpectrumActionStatus)
 
-      // ** If the result is 200, then response is successful
+      // ** If the result is 200, then response is successful, therefore we can chnage is required from true to false
       if (response.status === 200) {
         // Successful login
         return response.status
