@@ -1,29 +1,27 @@
 // Importing necessary dependencies and components
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import {  WebSocketLiveData } from "src/types";
+import { useEffect, useRef, useState } from 'react'
+import toast from 'react-hot-toast'
+import { WebSocketLiveData } from 'src/types'
 
-import { NextRouter, useRouter } from "next/router";
-import { AeroSpaceController } from "src/services/controllers";
-import { Grid } from "@mui/material";
-import SpectrumLiveStatusUI from "./SpectrumLiveStatusUI";
-
+import { NextRouter, useRouter } from 'next/router'
+import { AeroSpaceController } from 'src/services/controllers'
+import { Grid } from '@mui/material'
+import SpectrumLiveStatusUI from './SpectrumLiveStatusUI'
 
 //** Main component for the Spectrum Status Dashboard
 const SpectrumLiveStatusDashboardScreen = () => {
+  // ** States
+  const socketRef = useRef<WebSocketLiveData>()
+  const [socket, setSocket] = useState<WebSocketLiveData | undefined>()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isActionLoading, setIsActionLoading] = useState(false)
+  const [isStatuesUpdated, setIsStatuesUpdated] = useState(false)
 
+  //** Initializing Next.js router and AeroSpaceController
+  const router: NextRouter = useRouter()
 
-   // ** States
-   const [socket, setSocket] = useState<WebSocketLiveData | undefined>()
-   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-   const [isActionLoading, setIsActionLoading] = useState(false)
-   const [isStatuesUpdated, setIsStatuesUpdated] = useState(false)
-
- //** Initializing Next.js router and AeroSpaceController
-  const router: NextRouter = useRouter();
-
+  //!! If isActivated is true and action is required, show a toast
   const handleActivation = (data: WebSocketLiveData) => {
-    // If isActivated is true and action is required, show a toast
     if (data?.IsActionRequired === true) {
       toast.success('Action is required!', {
         position: 'top-right',
@@ -32,6 +30,9 @@ const SpectrumLiveStatusDashboardScreen = () => {
     }
   }
 
+  /**
+   * Handles fetching live data from the wss api
+   */
   const getSpectrumLiveData = () => {
     try {
       const newSocket = new WebSocket('wss://webfrontendassignment-isaraerospace.azurewebsites.net/api/SpectrumWS')
@@ -39,9 +40,9 @@ const SpectrumLiveStatusDashboardScreen = () => {
       newSocket.addEventListener('message', event => {
         const data = JSON.parse(event.data)
 
+        console.log('data', data)
 
-
-        //** this will udapte the data for our state  */
+        // Update the data for the state
         setSocket({
           icon: 'ep:data-line',
           color: 'error',
@@ -53,14 +54,14 @@ const SpectrumLiveStatusDashboardScreen = () => {
           IsActionRequired: data.IsActionRequired
         })
 
-        // if action is required === true close the socket connection
+        // If action is required === true close the socket connection
         if (data.IsActionRequired === true) {
           newSocket.close()
-          
+
           return
         }
 
-        // receiving WebSocket data
+        // Receiving WebSocket data
         handleActivation(data)
       })
 
@@ -74,7 +75,23 @@ const SpectrumLiveStatusDashboardScreen = () => {
     }
   }
 
-  //* this function will be responsible for changing the is required status
+  /**
+   * Handles the WebSocket connection.
+   * If there is an existing connection, sets IsActionRequired to false to prepare for a new process.
+   * This prevents the existing connection from closing the new connection immediately.
+   */
+  const handleWebSocketConnection = () => {
+    if (socketRef.current) {
+      socketRef.current.IsActionRequired = false
+    }
+
+    // Create a new WebSocket connection by fetching the data again
+    getSpectrumLiveData()
+  }
+
+  /**
+   * Handles the fetching of the api that will be responsive for toggling the behavior of isRequired
+   */
   const handelIsRequiredAction = async () => {
     setIsActionLoading(true)
 
@@ -88,32 +105,28 @@ const SpectrumLiveStatusDashboardScreen = () => {
       toast.error('Action Unsuccessfully completed!', { id: 'loading' })
     }
     setIsActionLoading(false)
+
+    handleWebSocketConnection()
   }
 
   useEffect(() => {
     getSpectrumLiveData()
   }, [isStatuesUpdated]) // empty dependency array to run effect only once on mount
 
-
   //** Function to render SpectrumStatusData and SpectrumStatusUI components
   const renderCards = () => (
     <>
-  
       {/* SpectrumStatusUI component */}
-      <SpectrumLiveStatusUI
-        data={socket}
-        onActionClick={handelIsRequiredAction}
-        isActionLoading={isActionLoading}
-      />
+      <SpectrumLiveStatusUI data={socket} onActionClick={handelIsRequiredAction} isActionLoading={isActionLoading} />
     </>
-  );
+  )
 
   //** Returning the main structure of the component
   return (
     <Grid container spacing={6} className='match-height'>
       {renderCards()}
     </Grid>
-  );
-};
+  )
+}
 
-export default SpectrumLiveStatusDashboardScreen;
+export default SpectrumLiveStatusDashboardScreen
