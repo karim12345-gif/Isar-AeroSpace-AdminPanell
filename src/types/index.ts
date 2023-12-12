@@ -1,4 +1,12 @@
-import { CardData, GetSpectrumStatus } from './AeroSpace-Http'
-import { WebSocketLiveData } from './AeroSpace-WSS'
+import { CardData, GetSpectrumStatus, SpectrumStatusUIProps, SpectrumStatusUIWithActionProps } from './AeroSpace-Http'
+import { SpectrumLiveStatusUIActionProps, SpectrumLiveStatusUIProps, WebSocketLiveData } from './AeroSpace-WSS'
 
-export type { GetSpectrumStatus, CardData , WebSocketLiveData}
+export type {
+  GetSpectrumStatus,
+  CardData,
+  WebSocketLiveData,
+  SpectrumStatusUIProps,
+  SpectrumStatusUIWithActionProps,
+  SpectrumLiveStatusUIProps,
+  SpectrumLiveStatusUIActionProps
+}

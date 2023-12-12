@@ -1,4 +1,4 @@
-import { ThemeColor } from "src/@core/layouts/types"
+import { ThemeColor } from 'src/@core/layouts/types'
 
 interface GetSpectrumStatus {
   velocity: number
@@ -9,8 +9,7 @@ interface GetSpectrumStatus {
   isActionRequired: boolean
 }
 
-
- interface CardData {
+interface CardData {
   icon: string
   tooltip: string
   color: ThemeColor
@@ -22,5 +21,13 @@ interface GetSpectrumStatus {
   isActionRequired: boolean
 }
 
+interface SpectrumStatusUIProps {
+  data?: GetSpectrumStatus
+}
 
-export type { GetSpectrumStatus, CardData }
+interface SpectrumStatusUIWithActionProps {
+  data?: GetSpectrumStatus
+  onActionClick: () => void
+  isActionLoading: boolean
+}
+export type { GetSpectrumStatus, CardData, SpectrumStatusUIProps, SpectrumStatusUIWithActionProps }

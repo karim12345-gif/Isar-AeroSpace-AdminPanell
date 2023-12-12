@@ -1,13 +1,13 @@
 // Importing necessary dependencies and components
 import { useEffect } from 'react'
 
-import SpectrumStatusUI from './SpectrumStatusUI'
-
 import { Grid } from '@mui/material'
 import { useSpectrumStatus } from 'src/context/SpectrumContext'
-import SpectrumChart from './SpectrumChart'
+import SpectrumGaugesChart from './SpectrumGaugesChart'
+import SpectrumVerticalBarChart from './SpectrumVerticalBarChart'
+import SpectrumTextBox from './SpectrumTextBox'
+import SpectrumHorizontalBarChart from './SpectrumHorizontalBarChart'
 
-//** Main component for the Spectrum Status Dashboard
 const SpectrumStatusDashboardScreen = () => {
   const { spectrumOverviewNumbers, isActionLoading, isStatuesUpdated, getSpectrumStatusData, handleIsRequiredAction } =
     useSpectrumStatus()
@@ -16,24 +16,35 @@ const SpectrumStatusDashboardScreen = () => {
   useEffect(() => {
     getSpectrumStatusData()
 
-    //**eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isStatuesUpdated])
 
   //** Function to render  SpectrumStatusUI components
   const renderCards = () => (
     <>
-      {/* SpectrumStatusUI component */}
-
+      {/* Components */}
       <Grid item xs={12}>
-        <SpectrumChart />
+        <SpectrumGaugesChart data={spectrumOverviewNumbers} />
       </Grid>
 
-      <Grid item xs={12}></Grid>
-      <SpectrumStatusUI
-        data={spectrumOverviewNumbers}
-        onActionClick={handleIsRequiredAction}
-        isActionLoading={isActionLoading}
-      />
+      {/*  Text box bar chart*/}
+      <Grid item xs={12}>
+        <SpectrumTextBox
+          data={spectrumOverviewNumbers}
+          onActionClick={handleIsRequiredAction}
+          isActionLoading={isActionLoading}
+        />
+      </Grid>
+
+      {/*  Vertical bar chart*/}
+      <Grid item xs={12}>
+        <SpectrumVerticalBarChart data={spectrumOverviewNumbers} />
+      </Grid>
+
+      {/*  Horizontal  chart*/}
+      <Grid item xs={12}>
+        <SpectrumHorizontalBarChart data={spectrumOverviewNumbers} />
+      </Grid>
     </>
   )
 

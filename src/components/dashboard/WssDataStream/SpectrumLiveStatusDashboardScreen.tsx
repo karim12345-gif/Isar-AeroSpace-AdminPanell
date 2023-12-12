@@ -6,7 +6,10 @@ import { WebSocketLiveData } from 'src/types'
 import { NextRouter, useRouter } from 'next/router'
 import { AeroSpaceController } from 'src/services/controllers'
 import { Grid } from '@mui/material'
-import SpectrumLiveStatusUI from './SpectrumLiveStatusUI'
+import SpectrumGaugesChart from './SpectrumGaugesChartLiveData'
+import SpectrumHorizontalBarChartLiveData from './SpectrumHorizontalBarChartLiveData'
+import SpectrumVerticalBarChartLiveData from './SpectrumVerticalBarChartLiveData'
+import SpectrumLiveTextBoxLiveData from './SpectrumLiveTextBoxLiveData'
 
 //** Main component for the Spectrum Status Dashboard
 const SpectrumLiveStatusDashboardScreen = () => {
@@ -40,8 +43,6 @@ const SpectrumLiveStatusDashboardScreen = () => {
       newSocket.addEventListener('message', event => {
         const data = JSON.parse(event.data)
 
-        console.log('data', data)
-
         // Update the data for the state
         setSocket({
           icon: 'ep:data-line',
@@ -58,11 +59,15 @@ const SpectrumLiveStatusDashboardScreen = () => {
         if (data.IsActionRequired === true) {
           newSocket.close()
 
+          // Show toast for action required
+
+          handleActivation(data)
+
           return
         }
 
         // Receiving WebSocket data
-        handleActivation(data)
+        // handleActivation(data)
       })
 
       return () => {
@@ -116,8 +121,26 @@ const SpectrumLiveStatusDashboardScreen = () => {
   //** Function to render SpectrumStatusData and SpectrumStatusUI components
   const renderCards = () => (
     <>
+      <Grid item xs={12}>
+        <SpectrumGaugesChart data={socket} />
+      </Grid>
+
       {/* SpectrumStatusUI component */}
-      <SpectrumLiveStatusUI data={socket} onActionClick={handelIsRequiredAction} isActionLoading={isActionLoading} />
+      <Grid item xs={12}>
+        <SpectrumLiveTextBoxLiveData
+          data={socket}
+          onActionClick={handelIsRequiredAction}
+          isActionLoading={isActionLoading}
+        />
+      </Grid>
+
+      {/* Vertical bar chart Component */}
+      <SpectrumVerticalBarChartLiveData data={socket} />
+
+      {/*  Horizontal bar chart Component*/}
+      <Grid item xs={12}>
+        <SpectrumHorizontalBarChartLiveData data={socket} />
+      </Grid>
     </>
   )
 

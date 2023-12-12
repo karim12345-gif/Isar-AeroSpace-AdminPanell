@@ -1,6 +1,3 @@
-// ** React Imports
-import { useEffect } from 'react'
-
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -11,20 +8,11 @@ import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
 import { ApexOptions } from 'apexcharts'
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
-import { useSpectrumStatus } from 'src/context/SpectrumContext'
+import { SpectrumStatusUIProps } from 'src/types'
 
-const SpectrumChart = () => {
-  // ** use context
-  const { spectrumOverviewNumbers, getSpectrumStatusData } = useSpectrumStatus()
-
+const SpectrumGaugesChart: React.FC<SpectrumStatusUIProps> = ({ data }) => {
   // ** Hooks
   const theme = useTheme()
-
-  useEffect(() => {
-    getSpectrumStatusData()
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   //!! the chart options
   const createChartOptions = (data: number, color: string): ApexOptions => ({
@@ -108,28 +96,28 @@ const SpectrumChart = () => {
   })
 
   const temperatureOptions = createChartOptions(
-    spectrumOverviewNumbers?.temperature || 0, // Use 0 as a default value, replace it with an appropriate default
+    data?.temperature || 0, // Use 0 as a default value, replace it with an appropriate default
     theme.palette.success.main
   )
 
-  const altitudeOptions = createChartOptions(spectrumOverviewNumbers?.altitude || 0, theme.palette.info.main)
+  const altitudeOptions = createChartOptions(data?.altitude || 0, theme.palette.info.main)
 
-  const velocityOptions = createChartOptions(spectrumOverviewNumbers?.velocity || 0, theme.palette.warning.main)
+  const velocityOptions = createChartOptions(data?.velocity || 0, theme.palette.warning.main)
 
-  const percentageTemperature = spectrumOverviewNumbers ? (spectrumOverviewNumbers?.temperature * 0.1).toFixed(2) : 0
+  const percentageTemperature = data ? (data?.temperature * 0.1).toFixed(2) : 0
 
-  const percentageAltitude = spectrumOverviewNumbers ? (spectrumOverviewNumbers?.altitude * 0.1).toFixed(2) : 0
+  const percentageAltitude = data ? (data?.altitude * 0.1).toFixed(2) : 0
 
-  const percentageVelocity = spectrumOverviewNumbers ? (spectrumOverviewNumbers?.velocity * 0.1).toFixed(2) : 0
+  const percentageVelocity = data ? (data?.velocity * 0.1).toFixed(2) : 0
 
   return (
     <>
-      {spectrumOverviewNumbers ? (
+      {data ? (
         <div style={{ display: 'flex', gap: '26px' }}>
           {/* Temperature Chart */}
           <Card style={{ flex: '1' }}>
             <CardContent>
-              <Typography variant='h5'>{spectrumOverviewNumbers.temperature} </Typography>
+              <Typography variant='h5'>{data.temperature} </Typography>
               <Typography variant='body2' style={{ color: 'text.disabled' }}>
                 Temperature rate
               </Typography>
@@ -145,7 +133,7 @@ const SpectrumChart = () => {
           {/* Altitude Chart */}
           <Card style={{ flex: '1' }}>
             <CardContent>
-              <Typography variant='h5'>{spectrumOverviewNumbers.altitude} </Typography>
+              <Typography variant='h5'>{data.altitude} </Typography>
               <Typography variant='body2' style={{ color: 'text.disabled' }}>
                 Altitude rate
               </Typography>
@@ -161,7 +149,7 @@ const SpectrumChart = () => {
           {/* Velocity Chart */}
           <Card style={{ flex: '1' }}>
             <CardContent>
-              <Typography variant='h5'>{spectrumOverviewNumbers.velocity} </Typography>
+              <Typography variant='h5'>{data.velocity} </Typography>
               <Typography variant='body2' style={{ color: 'text.disabled' }}>
                 Velocity rate
               </Typography>
@@ -175,10 +163,10 @@ const SpectrumChart = () => {
           </Card>
         </div>
       ) : (
-        <div>Loading...</div>
+        <div>Waiting for SpectrumWS api to connect...</div>
       )}
     </>
   )
 }
 
-export default SpectrumChart
+export default SpectrumGaugesChart
