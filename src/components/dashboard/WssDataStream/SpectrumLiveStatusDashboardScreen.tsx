@@ -30,6 +30,11 @@ const SpectrumLiveStatusDashboardScreen = () => {
         position: 'top-right',
         duration: 5000 // 5 seconds
       })
+    } else {
+      toast.error('Action is not required!', {
+        position: 'top-right',
+        duration: 5000 // 5 seconds
+      })
     }
   }
 
