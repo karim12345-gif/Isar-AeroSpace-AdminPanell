@@ -9,13 +9,3 @@ export class ResponseModel<T> {
     this.message = message
   }
 }
-
-export class DateParameter {
-  public month: number
-  public year: number
-
-  constructor(month: number, year: number) {
-    this.month = month
-    this.year = year
-  }
-}
